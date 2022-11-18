@@ -15,6 +15,7 @@ namespace WonderTree_API.App_Start
         private readonly string MongoPassword = ConfigurationManager.AppSettings["MongoPassword"];
         //var MongoPort = ConfigurationManager.AppSettings["MongoPort"];  //27017
         private readonly string MongoHost = ConfigurationManager.AppSettings["MongoHost"];  //local
+        private SqlContext db = new SqlContext();
         public bool Insert(GameAnalytics model)
         {
             string conString = $"mongodb://{MongoHost}&w=majority";
@@ -61,6 +62,27 @@ namespace WonderTree_API.App_Start
             var database = client.GetDatabase("test");
             var temp = database.GetCollection<GameAnalyticsDoc>("GameAnalytics");
             return temp.Find(x => x.GameAnalytics.Time >= toDate && x.GameAnalytics.Time < fromDate).ToList();
+        }
+        public List<GameAnalyticsDoc> GetByEventType(int evtType)
+        {
+            string conString = $"mongodb://{MongoHost}&w=majority";
+            var client = new MongoClient(
+                conString
+
+            );
+            var database = client.GetDatabase("test");
+            var temp = database.GetCollection<GameAnalyticsDoc>("GameAnalytics");
+            return temp.Find(x => x.GameAnalytics.EventType == evtType).ToList();
+        }
+        public void sendEmail()
+        {
+            var users = db.users.Select(x => x.UserID);
+            foreach (var item in users)
+            {
+                var ProgressList = GetByUserId(item);
+                //Send email for each users
+            }
+
         }
     }
 }

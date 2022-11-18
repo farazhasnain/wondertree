@@ -27,8 +27,8 @@ namespace WonderTree_API.Controllers
         {
             if (ModelState.IsValid)
             {
-                //db.gameAnalytics.Add(model);
-                //db.SaveChanges();
+                db.gameAnalytics.Add(model);
+                db.SaveChanges();
                 var mongo = new MongoService();
                 mongo.Insert(model);
                 return true;
@@ -66,6 +66,13 @@ namespace WonderTree_API.Controllers
         {
             var service = new MongoService();
             var resp = JsonConvert.SerializeObject(service.GetByDate(toDate,fromDate));
+            return resp;
+        }
+        [System.Web.Mvc.HttpGet]
+        public async Task<string> GetByEventType(int eventType)
+        {
+            var service = new MongoService();
+            var resp = JsonConvert.SerializeObject(service.GetByEventType(eventType));
             return resp;
         }
     }
